@@ -26,9 +26,10 @@ int main(int argc, char * argv[]) {
 	struct sockaddr_in serverAddress;
 	int socketID;
 	int connectionCheck;
-	char buffer[MAX_LENGTH];
+	char buffer[MAX_LENGTH + 2];
 	int payloadLength;
 	int totalMessageSize;
+  int overMaxLength = 0;
 	char* payload;
 
 
@@ -82,11 +83,24 @@ int main(int argc, char * argv[]) {
   	//Actually sending the messages.
   	while (fgets(buffer, sizeof(buffer), stdin)) {
     	payloadLength = 0;
+      overMaxLength = 0;
     	while(buffer[payloadLength] != '\n') {
     		payloadLength = payloadLength + 1;
     		if (payloadLength > MAX_LENGTH) {
-    			printf("WARNING: Message too long (keep below 1024 characters).");
-    			continue;
+          payloadLength = MAX_LENGTH;
+
+          //EDGE CASE TESTING
+          //printf("2nd to last char: %c \n", buffer[MAX_LENGTH - 1]);
+          //printf("last char: %c \n", buffer[MAX_LENGTH]);
+          //EDGE CASE TESTING
+
+
+          if(buffer[MAX_LENGTH] == '\n') {
+            break;
+          }
+          overMaxLength = 1;
+    			printf("WARNING: Message too long (keep below 1024 characters) Concatenating to 1024. \n");
+    			break;
     		}
     	}
 
@@ -94,6 +108,7 @@ int main(int argc, char * argv[]) {
     	//printf("Payload length: %d \n", payloadLength);
     	//TESTING
 
+      //Creates the proper payload size in bytes in memory.
     	totalMessageSize = payloadLength + 4;
     	payload = malloc(totalMessageSize*sizeof(char));
 
@@ -120,6 +135,13 @@ int main(int argc, char * argv[]) {
     	//TESTING
 
     	send(socketID, payload, totalMessageSize, 0);
+      
+      //Will get rid of the characters after 1024.
+      while (overMaxLength == 1 && fgetc(stdin) != '\n') {
+        continue;
+      }
+
+      //Frees the bytes used for the current payload.
     	free(payload);
 
   	}
