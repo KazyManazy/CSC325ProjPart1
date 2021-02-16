@@ -32,6 +32,7 @@ int main(int argc, char * argv[]) {
 	char messageSizeString[LENGTH_FIELD + 1];
   	messageSizeString[4] = '\0';
   	int totalMessageSize;
+  	int i;
 
 	//Making sure that one argument was entered when running this file.
 	if(argc==2) {
@@ -99,7 +100,7 @@ int main(int argc, char * argv[]) {
 
     		//Finds the length of the payload in the first 4 bytes of the message.
       		fputs("Payload Length: ", stdout);
-      		for(int i = 0; i < LENGTH_FIELD; i++) {
+      		for(i = 0; i < LENGTH_FIELD; i++) {
         		messageSizeString[i] = buffer[i];
         		fputc(buffer[i], stdout);
       		}
@@ -108,7 +109,7 @@ int main(int argc, char * argv[]) {
       		//Prints out the payload based on the first 4 bytes/
       		fputs("Payload   Text: ", stdout);
       		totalMessageSize = atoi(messageSizeString);
-      		for(int i = 4; i < (totalMessageSize + 4); i++) {
+      		for(i = 4; i < (totalMessageSize + 4); i++) {
         		fputc(buffer[i], stdout);
       		}
       		fputc('\n', stdout);

@@ -30,6 +30,7 @@ int main(int argc, char * argv[]) {
 	int payloadLength;
 	int totalMessageSize;
   int overMaxLength = 0;
+  int i;
 	char* payload;
 
 
@@ -116,7 +117,7 @@ int main(int argc, char * argv[]) {
     	//printf("Size allocated for total payload: %d \n", totalMessageSize);
     	//TESTING
 
-    	for(int i = 0; i < payloadLength; i++) {
+    	for(i = 0; i < payloadLength; i++) {
     		payload[i + 4] = buffer[i];
     	}
     	payload[0] = (payloadLength / 1000) + '0';
